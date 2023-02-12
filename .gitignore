@@ -1,0 +1,6 @@
+*.spec
+dist/
+build/
+__pycache__/
+launch.bat
+launch.sh
