@@ -1,5 +1,8 @@
 import re
 
+backupCounter = 3
+
+
 def readTXT(filepath):
     data = open(filepath, "r")
     text = data.read()
@@ -29,7 +32,18 @@ def readTXT(filepath):
         
         for data in element:
             if "/" in data:
-                parsedElements[len(parsedElements) - 1]["date"] = data.replace(':', '')
+                formattedDate = ""
+                
+                numbers = data.split("/")
+                
+                if len(numbers[0]) == 1:
+                    numbers[0] = "0" + numbers[0]
+                if len(numbers[1]) == 1:
+                    numbers[1] = "0" + numbers[1]
+                
+                formattedDate += numbers[0] + "/" + numbers[1] + "/" + numbers[2]
+                
+                parsedElements[len(parsedElements) - 1]["date"] = formattedDate.replace(':', '')
                 
             if "Weight" in data or "weight" in data:            
                 value = ""
@@ -72,6 +86,8 @@ def readTXT(filepath):
 
 
 def writeTXT(filepath, elements):
+    global backupCounter
+    
     data = open(filepath, "w")
     
     text = ""
@@ -91,6 +107,32 @@ def writeTXT(filepath, elements):
     data.write(text)
     
     data.close()
+    
+    backupCounter -= 1
+    
+    
+    if backupCounter == 0:
+        backupCounter = 5
+        
+        data = open(filepath + ".bak", "w")
+    
+        text = ""
+        
+        for element in elements:
+            if "date" in element and len(element["date"]) != 0:
+                text += element["date"] + ":\n"
+            if "time" in element and len(element["time"]) != 0:
+                text += "Time: " + element["time"] + "\n"
+            if "distance" in element and len(element["distance"]) != 0:
+                text += "Distance: " + element["distance"] + " Km\n"
+            if "weight" in element and len(element["weight"]) != 0:
+                text += "Weight: " + element["weight"] + " Kg\n"
+                
+            text += "\n"
+        
+        data.write(text)
+        
+        data.close()
     
     
     

@@ -8,11 +8,18 @@ from frames import *
 from shared import *
 from dataParser import *
 
-def stringVarCallback(sv):
-    if sv.get() != "":
-        wrongDate = sv.get()
-        numbers = wrongDate.split("/")
-        sv.set(numbers[1] + "/" + numbers[0] + "/" + numbers[2])
+
+def treeview_sort_column(tv, col, reverse):
+    l = [(tv.set(k, col), k) for k in tv.get_children('')]
+    l.sort(reverse=reverse)
+
+    # rearrange items in sorted positions
+    for index, (val, k) in enumerate(l):
+        tv.move(k, '', index)
+
+    # reverse sort next time
+    tv.heading(col, command=lambda: \
+               treeview_sort_column(tv, col, not reverse))
 
 
 def syncDaysWithTree():
@@ -38,10 +45,12 @@ def clickHandler(*args):
     # print(args[0])
     
     if (args[0] == "load"):
-        setFileDir(filedialog.askopenfilename())
-        setDays(readTXT(getFileDir()))
+        if (args[1] != ""):
+            setFileDir(args[1])
+        else:
+            setFileDir(filedialog.askopenfilename())
         
-        print(getDays())
+        setDays(readTXT(getFileDir()))
         
         getWidgets()["days"].delete(*getWidgets()["days"].get_children())
         
@@ -124,6 +133,8 @@ def clickHandler(*args):
         
         syncDaysWithTree()
 
+
+
 def loadWidgets(frames):
     if "daysF" in frames:
         loadDays(frames["daysF"])
@@ -137,7 +148,7 @@ def loadWidgets(frames):
         
         
 def loadDays(frame):
-    columns = ('date', 'time', 'distance', 'weight')
+    columns = ('Date', 'Time', 'Distance', 'Weight')
     
     days = Treeview(
         frame,
@@ -145,10 +156,13 @@ def loadDays(frame):
         show = 'headings'
     )
     
-    days.heading('date', text = "Date")
-    days.heading('time', text = "Time")
-    days.heading('distance', text = "Distance (Km)")
-    days.heading('weight', text = "Weight (Kg)")
+    # days.heading('date', text = "Date")
+    # days.heading('time', text = "Time")
+    # days.heading('distance', text = "Distance (Km)")
+    # days.heading('weight', text = "Weight (Kg)")
+    
+    for col in columns:
+        days.heading(col, text = col, command = lambda _col = col: treeview_sort_column(days, _col, False))
     
     scrollbar = Scrollbar(frame, orient = VERTICAL, command = days.yview)
     days.configure(yscroll = scrollbar.set)
@@ -193,7 +207,7 @@ def loadButtons(frame):
     addButton.grid(column = 1, row = 0, sticky = "E")
     removeButton.grid(column = 2, row = 0)
     modifyButton.grid(column = 3, row = 0, sticky = "W")
-    progressButton.grid(column = 4, row = 0, sticky = "W")
+    progressButton.grid(column = 4, row = 0, sticky = "E")
 
 
 def loadAdd(frame):
@@ -201,7 +215,6 @@ def loadAdd(frame):
         getStrings()["dateEntry"].set("")
     else:
         getStrings()["dateEntry"] = StringVar(name = "dateEntry")
-        getStrings()["dateEntry"].trace("w", lambda name, index, mode, sv = getStrings()["dateEntry"]: stringVarCallback(sv))
         
     if "timeEntry" in getStrings():
         getStrings()["timeEntry"].set("")
@@ -227,7 +240,8 @@ def loadAdd(frame):
     dateEntry = DateEntry(
         frame,
         textvariable = getStrings()["dateEntry"],
-        selectmode = 'day'
+        selectmode = 'day',
+        date_pattern = 'dd/MM/yy'
     )
     
     
@@ -297,11 +311,12 @@ def loadModify(frame):
         text = "Date"
     )
     
-    dateEntry = Entry(
+    dateEntry = DateEntry(
         frame,
-        textvariable = getStrings()["dateEntry"]
+        textvariable = getStrings()["dateEntry"],
+        selectmode = 'day',
+        date_pattern = 'dd/MM/yy'
     )
-    dateEntry.focus()
     
     
     timeLabel = Label(

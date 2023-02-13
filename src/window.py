@@ -3,11 +3,48 @@ from ttkthemes import ThemedTk
 
 from shared import *
 from style import *
+from dataParser import *
 
 # function to call when the window gets closed
 def closeWindowCallback(event):
+    if getFileDir() != "":
+        newDays = []
+            
+        for line in getWidgets()["days"].get_children():
+            newDays.append({})
+            for i in range(len(getWidgets()["days"].item(line)['values'])):
+                if i == 0:
+                    newDays[len(newDays) - 1]["date"] = getWidgets()["days"].item(line)['values'][i]
+                elif i == 1:
+                    newDays[len(newDays) - 1]["time"] = getWidgets()["days"].item(line)['values'][i]
+                elif i == 2:
+                    newDays[len(newDays) - 1]["distance"] = getWidgets()["days"].item(line)['values'][i]
+                elif i == 3:
+                    newDays[len(newDays) - 1]["weight"] = getWidgets()["days"].item(line)['values'][i]
+                    
+        setDays(newDays)
+        writeTXT(getFileDir(), getDays())
+    
     getWindow().destroy()
 def closeWindowWM():
+    if getFileDir() != "":
+        newDays = []
+            
+        for line in getWidgets()["days"].get_children():
+            newDays.append({})
+            for i in range(len(getWidgets()["days"].item(line)['values'])):
+                if i == 0:
+                    newDays[len(newDays) - 1]["date"] = getWidgets()["days"].item(line)['values'][i]
+                elif i == 1:
+                    newDays[len(newDays) - 1]["time"] = getWidgets()["days"].item(line)['values'][i]
+                elif i == 2:
+                    newDays[len(newDays) - 1]["distance"] = getWidgets()["days"].item(line)['values'][i]
+                elif i == 3:
+                    newDays[len(newDays) - 1]["weight"] = getWidgets()["days"].item(line)['values'][i]
+                    
+        setDays(newDays)
+        writeTXT(getFileDir(), getDays())
+        
     getWindow().destroy()
     
 def closeAddWindowCallback(event):

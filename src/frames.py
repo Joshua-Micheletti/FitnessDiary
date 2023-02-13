@@ -23,8 +23,8 @@ def loadFrames(window):
     buttonsF.columnconfigure(0, weight = 1)
     buttonsF.columnconfigure(1, weight = 5)
     buttonsF.columnconfigure(2, weight = 1)
-    buttonsF.columnconfigure(3, weight = 1)
-    buttonsF.columnconfigure(4, weight = 4)
+    buttonsF.columnconfigure(3, weight = 5)
+    buttonsF.columnconfigure(4, weight = 1)
     buttonsF.grid(column = 0, row = 1, sticky = "nsew")  
     
     frames["buttonsF"] = buttonsF
