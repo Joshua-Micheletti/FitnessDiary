@@ -12,18 +12,19 @@ def loadFrames(window):
 
     daysF = Frame(getWindow())
     daysF["padding"] = (20, 20)
-    daysF["relief"] = "groove"
+    daysF["relief"] = "flat"
     daysF.grid(column = 0, row = 0, sticky = "nsew")
     
     frames["daysF"] = daysF
     
     buttonsF = Frame(getWindow())
     buttonsF["padding"] = (20, 20)
-    buttonsF["relief"] = "groove"
-    buttonsF.columnconfigure(0, weight = 5)
-    buttonsF.columnconfigure(1, weight = 1)
+    buttonsF["relief"] = "flat"
+    buttonsF.columnconfigure(0, weight = 1)
+    buttonsF.columnconfigure(1, weight = 5)
     buttonsF.columnconfigure(2, weight = 1)
-    buttonsF.columnconfigure(3, weight = 4)
+    buttonsF.columnconfigure(3, weight = 1)
+    buttonsF.columnconfigure(4, weight = 4)
     buttonsF.grid(column = 0, row = 1, sticky = "nsew")  
     
     frames["buttonsF"] = buttonsF
@@ -39,7 +40,7 @@ def loadAddFrames(window):
     
     addFrame = Frame(getAddWindow())
     addFrame["padding"] = (20, 20)
-    addFrame["relief"] = "groove"
+    addFrame["relief"] = "flat"
     addFrame.columnconfigure(0, weight = 1)
     addFrame.columnconfigure(1, weight = 5)
     addFrame.rowconfigure(0, weight = 1)
@@ -63,7 +64,7 @@ def loadModifyFrames(window):
     
     modifyFrame = Frame(getModifyWindow())
     modifyFrame["padding"] = (20, 20)
-    modifyFrame["relief"] = "groove"
+    modifyFrame["relief"] = "flat"
     modifyFrame.columnconfigure(0, weight = 1)
     modifyFrame.columnconfigure(1, weight = 5)
     modifyFrame.rowconfigure(0, weight = 1)
@@ -77,8 +78,3 @@ def loadModifyFrames(window):
     frames["modifyFrame"] = modifyFrame
     
     return(frames)
-    
-
-    
-
-    

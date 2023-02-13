@@ -30,7 +30,7 @@ def createWindow(title = "GUI App", width = 1280, height = 720, offsetX = 0, off
 
     window = ThemedTk()                     # create the window
     window.geometry(str(width) + "x" + str(height) + "+" + str(offsetX) + "+" + str(offsetY)) # "1280x720+offsetx+offsety"
-    window.title(title)                    # set the window name
+    window.title("Fitness Diary")                    # set the window name
     window.resizable(resizeX, resizeY)     # resizable width and height
     window.minsize(minResizeX, minResizeY) # min resize dimensions
     window.maxsize(maxResizeX, maxResizeY) # max resize dimensions

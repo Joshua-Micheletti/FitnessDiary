@@ -1,0 +1,13 @@
+10/2/23:
+Time: 15:03
+Distance: 0.52 Km
+
+12/2/23:
+Time: 20:03
+Distance: 0.81 Km
+
+13/2/23:
+Time: 20:17
+Distance: 0.9 Km
+Weight: 125.1 Kg
+

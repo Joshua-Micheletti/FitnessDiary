@@ -5,6 +5,9 @@ modifyWindow = None
 strings = dict()
 widgets = dict()
 
+fileDir = ""
+days = []
+
 
 def getWindow():
     global window
@@ -49,4 +52,22 @@ def getWidgets():
 def setWidgets(newWidgets):
     global widgets
     widgets = newWidgets
+    
+    
+def getFileDir():
+    global fileDir
+    return(fileDir)
+
+def setFileDir(newFileDir):
+    global fileDir
+    fileDir = newFileDir
+    
+    
+def getDays():
+    global days
+    return(days)
+
+def setDays(newDays):
+    global days
+    days = newDays
     

@@ -2,13 +2,70 @@ from tkinter.ttk import *
 from tkinter import PhotoImage
 from tkinter import StringVar
 from tkinter import messagebox
+from tkinter import filedialog
+from tkcalendar import DateEntry
 from frames import *
 from shared import *
+from dataParser import *
 
-widgets = dict()
+def stringVarCallback(sv):
+    if sv.get() != "":
+        wrongDate = sv.get()
+        numbers = wrongDate.split("/")
+        sv.set(numbers[1] + "/" + numbers[0] + "/" + numbers[2])
+
+
+def syncDaysWithTree():
+    newDays = []
+        
+    for line in getWidgets()["days"].get_children():
+        newDays.append({})
+        for i in range(len(getWidgets()["days"].item(line)['values'])):
+            if i == 0:
+                newDays[len(newDays) - 1]["date"] = getWidgets()["days"].item(line)['values'][i]
+            elif i == 1:
+                newDays[len(newDays) - 1]["time"] = getWidgets()["days"].item(line)['values'][i]
+            elif i == 2:
+                newDays[len(newDays) - 1]["distance"] = getWidgets()["days"].item(line)['values'][i]
+            elif i == 3:
+                newDays[len(newDays) - 1]["weight"] = getWidgets()["days"].item(line)['values'][i]
+                
+    setDays(newDays)
+    writeTXT(getFileDir(), getDays())
+
 
 def clickHandler(*args):
-    print(args[0])
+    # print(args[0])
+    
+    if (args[0] == "load"):
+        setFileDir(filedialog.askopenfilename())
+        setDays(readTXT(getFileDir()))
+        
+        print(getDays())
+        
+        getWidgets()["days"].delete(*getWidgets()["days"].get_children())
+        
+        for day in getDays():
+            date = ""
+            time = ""
+            distance = ""
+            weight = ""
+            
+            if "date" in day:
+                date = day["date"]
+            if "time" in day:
+                time = day["time"]
+            if "distance" in day:
+                distance = day["distance"]
+            if "weight" in day:
+                weight = day["weight"]
+                
+            getWidgets()["days"].insert('', 0, values = (
+                date,
+                time,
+                distance,
+                weight
+            ))
     
     if (args[0] == "addMain"):
         if getAddWindow() is None:
@@ -33,14 +90,18 @@ def clickHandler(*args):
             getStrings()["distanceEntry"].set(values[2])
             getStrings()["weightEntry"].set(values[3])
             
-    if (args[0] == "add"):        
+    if (args[0] == "add"):
+        getDays().append({})
+              
         getWidgets()["days"].insert('', 0, values = (
             getStrings()["dateEntry"].get(),
             getStrings()["timeEntry"].get(),
             getStrings()["distanceEntry"].get(),
             getStrings()["weightEntry"].get()
         ))
-    
+        
+        syncDaysWithTree()
+            
     if (args[0] == "modify"):
         selectedItem = getWidgets()["days"].selection()[0]
         getWidgets()["days"].item(selectedItem, values = (
@@ -50,6 +111,8 @@ def clickHandler(*args):
             getStrings()["weightEntry"].get()
         ))
         
+        syncDaysWithTree()
+        
     if (args[0] == "remove"):
         if len(getWidgets()["days"].selection()) == 0:
             messagebox.showerror("Selection Error",
@@ -58,8 +121,8 @@ def clickHandler(*args):
         
         selectedItem = getWidgets()["days"].selection()[0]
         getWidgets()["days"].delete(selectedItem)
-
-
+        
+        syncDaysWithTree()
 
 def loadWidgets(frames):
     if "daysF" in frames:
@@ -96,6 +159,12 @@ def loadDays(frame):
     
 
 def loadButtons(frame):
+    loadFileButton = Button(
+        frame,
+        text = "Load",
+        command = lambda: clickHandler("load")
+    )
+    
     addButton = Button(
         frame,
         text = "Add",
@@ -120,28 +189,46 @@ def loadButtons(frame):
         command = lambda: clickHandler("progressMain")
     )
     
-    addButton.grid(column = 0, row = 0, sticky = "E")
-    removeButton.grid(column = 1, row = 0)
-    modifyButton.grid(column = 2, row = 0, sticky = "W")
-    progressButton.grid(column = 3, row = 0, sticky = "W")
+    loadFileButton.grid(column = 0, row = 0, sticky = "W")
+    addButton.grid(column = 1, row = 0, sticky = "E")
+    removeButton.grid(column = 2, row = 0)
+    modifyButton.grid(column = 3, row = 0, sticky = "W")
+    progressButton.grid(column = 4, row = 0, sticky = "W")
 
 
 def loadAdd(frame):
-    getStrings()["dateEntry"] = StringVar(name = "dateEntry")
-    getStrings()["timeEntry"] = StringVar(name = "timeEntry")
-    getStrings()["distanceEntry"] = StringVar(name = "distanceEntry")
-    getStrings()["weightEntry"] = StringVar(name = "weightEntry")
+    if "dateEntry" in getStrings():
+        getStrings()["dateEntry"].set("")
+    else:
+        getStrings()["dateEntry"] = StringVar(name = "dateEntry")
+        getStrings()["dateEntry"].trace("w", lambda name, index, mode, sv = getStrings()["dateEntry"]: stringVarCallback(sv))
+        
+    if "timeEntry" in getStrings():
+        getStrings()["timeEntry"].set("")
+    else:
+        getStrings()["timeEntry"] = StringVar(name = "timeEntry")
+        
+    if "distanceEntry" in getStrings():
+        getStrings()["distanceEntry"].set("")
+    else:
+        getStrings()["distanceEntry"] = StringVar(name = "distanceEntry")
+        
+    if "weightEntry" in getStrings():
+        getStrings()["weightEntry"].set("")
+    else:
+        getStrings()["weightEntry"] = StringVar(name = "weightEntry")
     
+
     dateLabel = Label(
         frame,
         text = "Date"
     )
     
-    dateEntry = Entry(
+    dateEntry = DateEntry(
         frame,
-        textvariable = getStrings()["dateEntry"]
+        textvariable = getStrings()["dateEntry"],
+        selectmode = 'day'
     )
-    dateEntry.focus()
     
     
     timeLabel = Label(
