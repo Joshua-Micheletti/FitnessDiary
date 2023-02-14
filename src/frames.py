@@ -78,3 +78,48 @@ def loadModifyFrames(window):
     frames["modifyFrame"] = modifyFrame
     
     return(frames)
+
+
+def loadProgressFrames(window):
+    frames = dict()
+    
+    getProgressWindow().columnconfigure(0, weight = 0)
+    getProgressWindow().rowconfigure(0, weight = 0)
+    
+    progressFrame = Frame(getProgressWindow())
+    progressFrame["padding"] = (20, 20)
+    
+    progressFrame.columnconfigure(0, weight = 1)
+    progressFrame.columnconfigure(1, weight = 1)
+    progressFrame.columnconfigure(2, weight = 1)
+    progressFrame.rowconfigure(0, weight = 1)
+    progressFrame.rowconfigure(1, weight = 1)
+    
+    progressFrame.grid(column = 0, row = 0, sticky = "nsew")
+    
+    timeGraphFrame = Frame(progressFrame)
+    timeGraphFrame["relief"] = "flat"
+    timeGraphFrame.grid(column = 0, row = 0, sticky = "nsew")
+    
+    distanceGraphFrame = Frame(progressFrame)
+    distanceGraphFrame["relief"] = "flat"
+    distanceGraphFrame.grid(column = 1, row = 0, sticky = "nsew")
+    
+    weightGraphFrame = Frame(progressFrame)
+    weightGraphFrame["relief"] = "flat"
+    weightGraphFrame.grid(column = 2, row = 0, sticky = "nsew")
+    
+    streakFrame = Frame(progressFrame)
+    streakFrame.columnconfigure(0, weight = 1)
+    streakFrame.columnconfigure(1, weight = 1)
+    streakFrame["relief"] = "flat"
+    streakFrame.grid(column = 1, row = 1, sticky = "nsew")
+    
+    
+    frames["progressFrame"] = progressFrame
+    frames["timeGraphFrame"] = timeGraphFrame
+    frames["distanceGraphFrame"] = distanceGraphFrame
+    frames["weightGraphFrame"] = weightGraphFrame
+    frames["streakFrame"] = streakFrame
+    
+    return(frames)

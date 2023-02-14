@@ -1,6 +1,8 @@
 from tkinter import *
 from ttkthemes import ThemedTk
 
+import matplotlib.pyplot as plt
+
 from shared import *
 from style import *
 from dataParser import *
@@ -60,6 +62,15 @@ def closeModifyWindowCallback(event):
 def closeModifyWindowWM():
     getModifyWindow().destroy()
     setModifyWindow(None)
+
+def closeProgressWindowCallback(event):
+    plt.close("all")
+    getProgressWindow().destroy()
+    setProgressWindow(None)
+def closeProgressWindowWM():
+    plt.close("all")
+    getProgressWindow().destroy()
+    setProgressWindow(None)
 
 # function to create a window
 def createWindow(title = "GUI App", width = 1280, height = 720, offsetX = 0, offsetY = 0, resizeX = TRUE, resizeY = TRUE, minResizeX = 400, minResizeY = 400, maxResizeX = 1920, maxResizeY = 1080, alpha = 1, icon = ""):
@@ -127,5 +138,27 @@ def createModifyWindow(title = "GUI App", width = 1280, height = 720, offsetX = 
     setModifyWindow(modifyWindow)
 
     return(modifyWindow)
+
+
+def createProgressWindow(title = "GUI App", width = 1280, height = 720, offsetX = 0, offsetY = 0, resizeX = TRUE, resizeY = TRUE, minResizeX = 400, minResizeY = 400, maxResizeX = 1920, maxResizeY = 1080, alpha = 1, icon = ""):
+    progressWindow = getProgressWindow()
+
+    progressWindow = Toplevel()                     # create the window
+    progressWindow.geometry(str(width) + "x" + str(height) + "+" + str(offsetX) + "+" + str(offsetY)) # "1280x720+offsetx+offsety"
+    progressWindow.title(title)                    # set the window name
+    progressWindow.resizable(resizeX, resizeY)     # resizable width and height
+    progressWindow.minsize(minResizeX, minResizeY) # min resize dimensions
+    progressWindow.maxsize(maxResizeX, maxResizeY) # max resize dimensions
+    progressWindow.attributes('-alpha', alpha)     # opacity
+    #window.attributes('-topmost', 1)      # window always on top
+    if icon != "":
+        progressWindow.iconphoto(False, PhotoImage(file = icon)) # load the icon
+        
+    progressWindow.bind('<Escape>', closeProgressWindowCallback)   # bind the escape button to close the program
+    progressWindow.protocol("WM_DELETE_WINDOW", closeProgressWindowWM)
+
+    setProgressWindow(progressWindow)
+
+    return(progressWindow)
 
 

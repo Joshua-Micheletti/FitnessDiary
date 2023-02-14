@@ -1,6 +1,7 @@
 window = None
 addWindow = None
 modifyWindow = None
+progressWindow = None
 
 strings = dict()
 widgets = dict()
@@ -34,6 +35,15 @@ def getModifyWindow():
 def setModifyWindow(newWindow):
     global modifyWindow
     modifyWindow = newWindow
+    
+    
+def getProgressWindow():
+    global progressWindow
+    return(progressWindow)
+
+def setProgressWindow(newWindow):
+    global progressWindow
+    progressWindow = newWindow
     
 
 def getStrings():

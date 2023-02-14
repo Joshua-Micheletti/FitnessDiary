@@ -4,9 +4,23 @@ from tkinter import StringVar
 from tkinter import messagebox
 from tkinter import filedialog
 from tkcalendar import DateEntry
+import matplotlib
+import matplotlib.pyplot as plt
+from datetime import datetime, timedelta
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg,
+    NavigationToolbar2Tk
+)
+from matplotlib.dates import DateFormatter
+from cycler import cycler
+import time
+
 from frames import *
 from shared import *
 from dataParser import *
+
+plt.style.use('https://github.com/Joshua-Micheletti/matplotlib-stylesheets/raw/master/pitayasmoothie-darkv2.mplstyle')
 
 
 def treeview_sort_column(tv, col, reverse):
@@ -42,10 +56,10 @@ def syncDaysWithTree():
 
 
 def clickHandler(*args):
-    # print(args[0])
+    print(args[0])
     
     if (args[0] == "load"):
-        if (args[1] != ""):
+        if (len(args) == 2):
             setFileDir(args[1])
         else:
             setFileDir(filedialog.askopenfilename())
@@ -133,6 +147,11 @@ def clickHandler(*args):
         
         syncDaysWithTree()
 
+    if (args[0] == "progressMain"):
+        if getProgressWindow() is None:
+            createProgressWindow("Progress", 1240, 550, 0, 0, False, False, 0, 0, 1280, 720, 1)
+            loadWidgets(loadProgressFrames(getProgressWindow()))
+
 
 
 def loadWidgets(frames):
@@ -144,6 +163,17 @@ def loadWidgets(frames):
         loadAdd(frames["addFrame"])
     if "modifyFrame" in frames:
         loadModify(frames["modifyFrame"])
+    if "progressFrame" in frames:
+        loadProgress(frames["progressFrame"]) 
+    if "timeGraphFrame" in frames:
+        loadTimeGraph(frames["timeGraphFrame"])
+    if "distanceGraphFrame" in frames:
+        loadDistanceGraph(frames["distanceGraphFrame"])
+    if "weightGraphFrame" in frames:
+        loadWeightGraph(frames["weightGraphFrame"])
+    if "streakFrame" in frames:
+        loadStreak(frames["streakFrame"])
+    
         
         
         
@@ -373,3 +403,130 @@ def loadModify(frame):
     
     modifyButton.grid(row = 4, column = 0, columnspan = 2)
     
+    
+def loadProgress(frame):
+    print("progress")
+ 
+   
+def loadTimeGraph(frame):
+    figure = Figure(figsize = (4, 4), dpi = 100)
+    
+    figureCanvas = FigureCanvasTkAgg(figure, frame)
+    
+    NavigationToolbar2Tk(figureCanvas, frame)
+    
+    date = []
+    time = []
+    
+    for day in sorted(getDays(), key = lambda d: d["date"]):
+        if "time" in day and len(day["time"]) != 0:
+            dateNumbers = day["date"].split("/")
+            date.append(datetime(int(dateNumbers[2]), int(dateNumbers[1]), int(dateNumbers[0])))
+            
+            timeNumbers = day["time"].split(":")
+            time.append(datetime(2023, 1, 1, 0, int(timeNumbers[0]), int(timeNumbers[1])))
+    
+    xFormatter = DateFormatter('%d/%m')
+    
+    yFormatter = DateFormatter('%H:%M')
+    
+    plot = figure.add_subplot()
+    plot.plot_date(date, time, linestyle = '--')
+    plot.set_title("Time")
+    plot.yaxis.set_major_formatter(yFormatter)
+    plot.xaxis.set_major_formatter(xFormatter)
+    
+    figureCanvas.get_tk_widget().pack(side = "top", fill = "both", expand = 1)
+    
+    
+def loadDistanceGraph(frame):
+    figure = Figure(figsize = (4, 4), dpi = 100)
+    
+    figureCanvas = FigureCanvasTkAgg(figure, frame)
+    
+    NavigationToolbar2Tk(figureCanvas, frame)
+    
+    date = []
+    distance = []
+    
+    for day in sorted(getDays(), key = lambda d: d["date"]):
+        if "distance" in day and len(day["distance"]) != 0:
+            dateNumbers = day["date"].split("/")
+            date.append(datetime(int(dateNumbers[2]), int(dateNumbers[1]), int(dateNumbers[0])))
+
+            distance.append(float(day["distance"]))
+    
+    xFormatter = DateFormatter('%d/%m')
+    
+    plot = figure.add_subplot()
+    plot.plot(date, distance, linestyle = '--', marker = 'o')
+    plot.set_title("Distance")
+    plot.xaxis.set_major_formatter(xFormatter)
+    
+    figureCanvas.get_tk_widget().pack(side = "top", fill = "both", expand = 1)
+    
+    
+def loadWeightGraph(frame):
+    figure = Figure(figsize = (4, 4), dpi = 100)
+    
+    figureCanvas = FigureCanvasTkAgg(figure, frame)
+    
+    NavigationToolbar2Tk(figureCanvas, frame)
+    
+    date = []
+    weight = []
+    
+    for day in sorted(getDays(), key = lambda d: d["date"]):
+        if "weight" in day and len(day["weight"]) != 0:
+            weight.append(float(day["weight"]))
+            
+            dateNumbers = day["date"].split("/")
+            date.append(datetime(int(dateNumbers[2]), int(dateNumbers[1]), int(dateNumbers[0])))
+    
+    xFormatter = DateFormatter('%d/%m')
+    
+    plot = figure.add_subplot()
+    plot.plot(date, weight, linestyle = '--', marker = 'o')
+    plot.set_title("Weight")
+    plot.xaxis.set_major_formatter(xFormatter)
+    
+    figureCanvas.get_tk_widget().pack(side = "top", fill = "both", expand = 1)
+    
+    
+def loadStreak(frame):
+    highestStreak = 0
+    currentStreak = 0
+    lastTime = 0
+    
+    for day in sorted(getDays(), key = lambda d: d["date"]):
+        date = day["date"].split("/")
+        date[2] = "20" + date[2]
+        datetimeDate = datetime(int(date[2]), int(date[1]), int(date[0]))
+        epochTime = time.mktime(datetimeDate.timetuple())
+        
+        if lastTime == 0:
+            currentStreak += 1
+        else:
+            if epochTime == lastTime + 86400:
+                currentStreak += 1
+            else:
+                currentStreak = 1
+        
+        if currentStreak > highestStreak:
+            highestStreak = currentStreak
+        
+        lastTime = epochTime
+        
+    
+    highestStreakLabel = Label(
+        frame,
+        text = "Highest streak: " + str(highestStreak)
+    )
+    
+    currentStreakLabel = Label(
+        frame,
+        text = "Current streak: " + str(currentStreak)
+    )
+    
+    highestStreakLabel.grid(column = 0, row = 0, sticky = "nse", pady = (40, 40), padx = (20, 20))
+    currentStreakLabel.grid(column = 1, row = 0, sticky = "nsw", pady = (40, 40), padx = (20, 20))
