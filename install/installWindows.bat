@@ -1,5 +1,5 @@
 pip install ttkthemes
-pip install tkcalender
+pip install tkcalendar
 pip install matplotlib
 
 echo python ./src/app.py > ..\launch.bat
