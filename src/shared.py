@@ -3,6 +3,8 @@ addWindow = None
 modifyWindow = None
 progressWindow = None
 
+theme = ""
+
 strings = dict()
 widgets = dict()
 
@@ -81,3 +83,12 @@ def setDays(newDays):
     global days
     days = newDays
     
+    
+def getTheme():
+    global theme
+    return(theme)
+
+def setTheme(newTheme):
+    global theme
+    theme = newTheme
+

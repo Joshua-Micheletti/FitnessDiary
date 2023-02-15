@@ -1,3 +1,8 @@
+15/02/23:
+Time: 22:20
+Distance: 0.85 Km
+Weight: 125.3 Kg
+
 14/02/23:
 Time: 21:34
 Distance: 0.82 Km

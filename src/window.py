@@ -72,6 +72,7 @@ def closeProgressWindowWM():
     getProgressWindow().destroy()
     setProgressWindow(None)
 
+
 # function to create a window
 def createWindow(title = "GUI App", width = 1280, height = 720, offsetX = 0, offsetY = 0, resizeX = TRUE, resizeY = TRUE, minResizeX = 400, minResizeY = 400, maxResizeX = 1920, maxResizeY = 1080, alpha = 1, icon = ""):
     window = getWindow()
