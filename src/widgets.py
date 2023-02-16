@@ -64,6 +64,9 @@ def clickHandler(*args):
         else:
             setFileDir(filedialog.askopenfilename())
         
+        if len(getFileDir()) == 0:
+            return
+        
         setDays(readTXT(getFileDir()))
         
         getWidgets()["days"].delete(*getWidgets()["days"].get_children())

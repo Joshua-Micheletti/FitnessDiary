@@ -21,12 +21,12 @@ Time: 16:38
 Distance: 0.60 Km
 Weight: 125.2 Kg
 
-10/02/23:
-Time: 15:03
-Distance: 0.52 Km
-
 09/02/23:
 Time: 15:41
 Distance: 0.41 Km
 Weight: 126.7 Kg
+
+10/02/23:
+Time: 15:03
+Distance: 0.52 Km
 

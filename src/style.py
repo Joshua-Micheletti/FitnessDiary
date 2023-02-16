@@ -19,6 +19,12 @@ def loadStyle(window):
     
     window.tk.call("source", "./themes/azure/azure.tcl")
     window.tk.call("set_theme", "dark")
+    
+    window.tk.call('source', './themes/forest/forest-light.tcl')
+    window.tk.call("source", "./themes/forest/forest-dark.tcl")
+    
+    window.tk.call("source", "./themes/sunValley/sv.tcl")
+    window.tk.call("set_theme", "dark")
 
     styles.configure("Warning.TLabel",
         foreground = "#f0ad4e",
