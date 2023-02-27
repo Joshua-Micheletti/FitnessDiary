@@ -81,6 +81,10 @@ def readTXT(filepath):
                         value += "."
                         
                     parsedElements[len(parsedElements) - 1]["distance"] = value
+
+        if not (parsedElements[len(parsedElements) - 1]["distance"] is None) and not(parsedElements[len(parsedElements) - 1]["time"] is None):
+            timeComponents = parsedElements[len(parsedElements) - 1]["time"].split(":")
+            parsedElements[len(parsedElements) - 1]["speed"] = str(((float(parsedElements[len(parsedElements) - 1]["distance"]) * 1000) / (float(timeComponents[0]) * 60 + float(timeComponents[1]))) * 3.6)   
         
     return(parsedElements)
 
@@ -99,8 +103,8 @@ def writeTXT(filepath, elements):
             text += "Time: " + element["time"] + "\n"
         if "distance" in element and len(element["distance"]) != 0:
             text += "Distance: " + element["distance"] + " Km\n"
-        if "weight" in element and len(element["weight"]) != 0:
-            text += "Weight: " + element["weight"] + " Kg\n"
+        if "weight" in element and len(str(element["weight"])) != 0:
+            text += "Weight: " + str(element["weight"]) + " Kg\n"
             
         text += "\n"
     

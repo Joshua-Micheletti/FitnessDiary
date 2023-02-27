@@ -50,6 +50,12 @@ def syncDaysWithTree():
                 newDays[len(newDays) - 1]["distance"] = getWidgets()["days"].item(line)['values'][i]
             elif i == 3:
                 newDays[len(newDays) - 1]["weight"] = getWidgets()["days"].item(line)['values'][i]
+
+        if not(newDays[len(newDays) - 1]["time"] is None) and not(newDays[len(newDays) - 1]["distance"] is None):
+            print("new speed!")
+            timeComponents = newDays[len(newDays) - 1]["time"].split(":")
+            newDays[len(newDays) - 1]["speed"] = str(((float(newDays[len(newDays) - 1]["distance"]) * 1000) / (float(timeComponents[0]) * 60 + float(timeComponents[1]))) * 3.6)
+            print(newDays[len(newDays) - 1]["speed"])
                 
     setDays(newDays)
     writeTXT(getFileDir(), getDays())
@@ -120,10 +126,10 @@ def clickHandler(*args):
         getDays().append({})
               
         getWidgets()["days"].insert('', 0, values = (
-            getStrings()["dateEntry"].get(),
-            getStrings()["timeEntry"].get(),
-            getStrings()["distanceEntry"].get(),
-            getStrings()["weightEntry"].get()
+            str(getStrings()["dateEntry"].get()),
+            str(getStrings()["timeEntry"].get()),
+            str(getStrings()["distanceEntry"].get()),
+            str(getStrings()["weightEntry"].get())
         ))
         
         syncDaysWithTree()
@@ -152,7 +158,7 @@ def clickHandler(*args):
 
     if (args[0] == "progressMain"):
         if getProgressWindow() is None:
-            createProgressWindow("Progress", 1240, 550, 0, 0, False, False, 0, 0, 1280, 720, 1)
+            createProgressWindow("Progress", 860, 1080, 0, 0, False, False, 0, 0, 1280, 1080, 1)
             loadWidgets(loadProgressFrames(getProgressWindow()))
 
 
@@ -174,6 +180,8 @@ def loadWidgets(frames):
         loadDistanceGraph(frames["distanceGraphFrame"])
     if "weightGraphFrame" in frames:
         loadWeightGraph(frames["weightGraphFrame"])
+    if "speedGraphFrame" in frames:
+        loadSpeedGraph(frames["speedGraphFrame"])
     if "streakFrame" in frames:
         loadStreak(frames["streakFrame"])
     
@@ -494,7 +502,37 @@ def loadWeightGraph(frame):
     plot.xaxis.set_major_formatter(xFormatter)
     
     figureCanvas.get_tk_widget().pack(side = "top", fill = "both", expand = 1)
+
+
+def loadSpeedGraph(frame):
+    figure = Figure(figsize = (4, 4), dpi = 100)
     
+    figureCanvas = FigureCanvasTkAgg(figure, frame)
+    
+    NavigationToolbar2Tk(figureCanvas, frame)
+    
+    date = []
+    speed = []
+    
+    print(getDays())
+
+    for day in sorted(getDays(), key = lambda d: d["date"]):
+        if "speed" in day and len(day["speed"]) != 0:
+            print("speed element to display in graph")
+            speed.append(float(day["speed"]))
+            
+            dateNumbers = day["date"].split("/")
+            date.append(datetime(int(dateNumbers[2]), int(dateNumbers[1]), int(dateNumbers[0])))
+    
+    xFormatter = DateFormatter('%d/%m')
+    
+    plot = figure.add_subplot()
+    plot.plot(date, speed, linestyle = '--', marker = 'o')
+    plot.set_title("Speed")
+    plot.xaxis.set_major_formatter(xFormatter)
+    
+    figureCanvas.get_tk_widget().pack(side = "top", fill = "both", expand = 1)
+    print("loaded speed graph")
     
 def loadStreak(frame):
     highestStreak = 0
