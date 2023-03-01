@@ -117,7 +117,7 @@ def loadProgressFrames(window):
     streakFrame.columnconfigure(0, weight = 1)
     streakFrame.columnconfigure(1, weight = 1)
     streakFrame["relief"] = "flat"
-    streakFrame.grid(column = 0, row = 2, sticky = "nsew")
+    streakFrame.grid(column = 0, row = 2, columnspan = 2, sticky = "nsew")
     
     
     frames["progressFrame"] = progressFrame

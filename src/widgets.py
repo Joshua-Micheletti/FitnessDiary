@@ -20,7 +20,7 @@ from frames import *
 from shared import *
 from dataParser import *
 
-plt.style.use('https://github.com/Joshua-Micheletti/matplotlib-stylesheets/raw/master/pitayasmoothie-darkv2.mplstyle')
+plt.style.use('https://github.com/Joshua-Micheletti/matplotlib-stylesheets/raw/master/pitayasmoothie-darkv3.mplstyle')
 
 
 def treeview_sort_column(tv, col, reverse):
@@ -52,10 +52,8 @@ def syncDaysWithTree():
                 newDays[len(newDays) - 1]["weight"] = getWidgets()["days"].item(line)['values'][i]
 
         if not(newDays[len(newDays) - 1]["time"] is None) and not(newDays[len(newDays) - 1]["distance"] is None):
-            print("new speed!")
             timeComponents = newDays[len(newDays) - 1]["time"].split(":")
             newDays[len(newDays) - 1]["speed"] = str(((float(newDays[len(newDays) - 1]["distance"]) * 1000) / (float(timeComponents[0]) * 60 + float(timeComponents[1]))) * 3.6)
-            print(newDays[len(newDays) - 1]["speed"])
                 
     setDays(newDays)
     writeTXT(getFileDir(), getDays())
@@ -158,7 +156,7 @@ def clickHandler(*args):
 
     if (args[0] == "progressMain"):
         if getProgressWindow() is None:
-            createProgressWindow("Progress", 860, 1080, 0, 0, False, False, 0, 0, 1280, 1080, 1)
+            createProgressWindow("Progress", 840, 1000, 0, 0, False, False, 0, 0, 840, 1000, 1)
             loadWidgets(loadProgressFrames(getProgressWindow()))
 
 
@@ -514,11 +512,9 @@ def loadSpeedGraph(frame):
     date = []
     speed = []
     
-    print(getDays())
 
     for day in sorted(getDays(), key = lambda d: d["date"]):
         if "speed" in day and len(day["speed"]) != 0:
-            print("speed element to display in graph")
             speed.append(float(day["speed"]))
             
             dateNumbers = day["date"].split("/")
@@ -532,7 +528,6 @@ def loadSpeedGraph(frame):
     plot.xaxis.set_major_formatter(xFormatter)
     
     figureCanvas.get_tk_widget().pack(side = "top", fill = "both", expand = 1)
-    print("loaded speed graph")
     
 def loadStreak(frame):
     highestStreak = 0
